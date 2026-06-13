@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Hero from "@/components/home/Hero";
 import CategoryTiles from "@/components/home/CategoryTiles";
+import GoogleReviews from "@/components/home/GoogleReviews";
 import ProductGrid from "@/components/products/ProductGrid";
 import { getFeaturedProducts, getDeals } from "@/lib/queries";
 
@@ -40,6 +41,9 @@ export default async function Home() {
         </div>
         <ProductGrid products={featured} />
       </section>
+
+      {/* Google reviews */}
+      <GoogleReviews />
 
       {/* Promo banner */}
       <section className="container-page pb-12">
