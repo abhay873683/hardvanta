@@ -1,0 +1,119 @@
+"use client";
+
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Registration failed.");
+        setLoading(false);
+        return;
+      }
+      // Auto sign-in after successful registration.
+      await signIn("credentials", { email, password, redirect: false });
+      router.push("/");
+      router.refresh();
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="container-page flex min-h-[70vh] items-center justify-center py-12">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-card">
+        <h1 className="text-2xl font-bold text-navy">Create your account</h1>
+        <p className="mt-1 text-sm text-silver-dark">
+          Join hardvanta to track orders and save your cart.
+        </p>
+
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-silver-dark bg-white py-2.5 text-sm font-semibold text-navy hover:border-royal hover:text-royal"
+        >
+          Continue with Google
+        </button>
+
+        <div className="my-5 flex items-center gap-3 text-xs text-silver">
+          <span className="h-px flex-1 bg-silver-light" /> OR{" "}
+          <span className="h-px flex-1 bg-silver-light" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+              {error}
+            </p>
+          )}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-navy">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-lg border border-silver-dark px-3 py-2.5 text-sm outline-none focus:border-royal focus:ring-2 focus:ring-royal/30"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-navy">
+              Email
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-silver-dark px-3 py-2.5 text-sm outline-none focus:border-royal focus:ring-2 focus:ring-royal/30"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-navy">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-silver-dark px-3 py-2.5 text-sm outline-none focus:border-royal focus:ring-2 focus:ring-royal/30"
+            />
+          </div>
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            {loading ? "Creating account..." : "Create account"}
+          </Button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-silver-dark">
+          Already have an account?{" "}
+          <Link href="/login" className="font-semibold text-royal">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
