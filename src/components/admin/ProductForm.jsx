@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Upload } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 const CATEGORIES = [
@@ -27,9 +29,29 @@ export default function ProductForm({ product }) {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   function set(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError("");
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed.");
+      set("image", data.url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSubmit(e) {
@@ -92,8 +114,36 @@ export default function ProductForm({ product }) {
         </L>
       </div>
 
-      <L label="Image URL">
-        <input className={inputCls} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="https://..." required />
+      <L label="Product Image">
+        <div className="flex flex-wrap items-center gap-4">
+          {form.image ? (
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-silver-light bg-cloud">
+              <Image src={form.image} alt="Preview" fill sizes="80px" className="object-cover" />
+            </div>
+          ) : (
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border border-dashed border-silver-dark text-xs text-silver-dark">
+              No image
+            </div>
+          )}
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-silver-dark px-4 py-2 text-sm font-semibold text-navy hover:border-royal hover:text-royal">
+            <Upload size={16} />
+            {uploading ? "Uploading…" : "Upload photo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={handleFileUpload}
+            />
+          </label>
+        </div>
+        <input
+          className={`${inputCls} mt-2`}
+          value={form.image}
+          onChange={(e) => set("image", e.target.value)}
+          placeholder="…or paste an image URL"
+          required
+        />
       </L>
 
       <label className="flex items-center gap-2 text-sm text-navy">
