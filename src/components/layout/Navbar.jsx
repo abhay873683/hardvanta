@@ -39,6 +39,13 @@ const navLinks = [
   { label: "Careers", href: "#" },
 ];
 
+const shopMenu = [
+  { label: "Shop", href: "/products" },
+  { label: "Track your order", href: "/orders" },
+  { label: "Featured Brands", href: "/products" },
+  { label: "Payment Options", href: "/checkout" },
+];
+
 export default function Navbar() {
   const { count } = useCart();
   const router = useRouter();
@@ -253,31 +260,18 @@ export default function Navbar() {
                     <ChevronDown size={14} />
                   </Link>
 
-                  {/* Shop mega-menu */}
+                  {/* Shop dropdown */}
                   {shopOpen && (
-                    <div className="absolute left-0 top-full z-50 w-[640px] rounded-b-lg border border-silver-light bg-white p-5 shadow-card-hover">
-                      <div className="mb-3 flex items-center justify-between">
-                        <h3 className="text-sm font-bold uppercase tracking-wide text-navy">
-                          Shop by Category
-                        </h3>
+                    <div className="absolute left-0 top-full z-50 w-56 rounded-b-lg border border-silver-light bg-white py-2 shadow-card-hover">
+                      {shopMenu.map((m) => (
                         <Link
-                          href="/products"
-                          className="text-xs font-semibold text-royal hover:underline"
+                          key={m.label}
+                          href={m.href}
+                          className="block px-4 py-2.5 text-sm text-navy hover:bg-cloud hover:text-royal"
                         >
-                          View all products
+                          {m.label}
                         </Link>
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                        {categories.map((c) => (
-                          <Link
-                            key={c.slug}
-                            href={`/products?category=${c.slug}`}
-                            className="rounded-md px-2 py-2 text-sm text-navy hover:bg-cloud hover:text-royal"
-                          >
-                            {c.name}
-                          </Link>
-                        ))}
-                      </div>
+                      ))}
                     </div>
                   )}
                 </div>
