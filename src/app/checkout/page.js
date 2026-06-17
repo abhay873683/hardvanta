@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/utils/formatPrice";
+import { lookupPincode } from "@/utils/pincode";
 import Button from "@/components/ui/Button";
 
 export default function CheckoutPage() {
@@ -24,6 +25,9 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState("COD");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  // PIN code verification state: idle | checking | ok | error
+  const [pinStatus, setPinStatus] = useState("idle");
+  const [pinMessage, setPinMessage] = useState("");
 
   // Require login to check out (orders are created from the server-side cart).
   useEffect(() => {
@@ -37,6 +41,31 @@ export default function CheckoutPage() {
 
   function update(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  // Verify the PIN code via India Post and auto-fill city + state.
+  async function handlePincode(value) {
+    const pin = value.replace(/\D/g, "").slice(0, 6); // digits only, max 6
+    update("pincode", pin);
+
+    if (pin.length < 6) {
+      setPinStatus("idle");
+      setPinMessage("");
+      return;
+    }
+
+    setPinStatus("checking");
+    setPinMessage("Checking PIN code…");
+    const result = await lookupPincode(pin);
+
+    if (result.ok) {
+      setForm((f) => ({ ...f, pincode: pin, city: result.city, state: result.state }));
+      setPinStatus("ok");
+      setPinMessage(`${result.area}, ${result.city}, ${result.state}`);
+    } else {
+      setPinStatus("error");
+      setPinMessage(result.error);
+    }
   }
 
   // Loads the Razorpay checkout widget script once, on demand.
@@ -113,6 +142,10 @@ export default function CheckoutPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    if (pinStatus === "error") {
+      setError("Please enter a valid Indian PIN code before placing the order.");
+      return;
+    }
     setLoading(true);
     try {
       if (payMethod === "ONLINE") {
@@ -169,9 +202,40 @@ export default function CheckoutPage() {
           </div>
           <Field label="Address" value={form.line1} onChange={(v) => update("line1", v)} required />
           <div className="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-navy">Pincode</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                required
+                value={form.pincode}
+                onChange={(e) => handlePincode(e.target.value)}
+                placeholder="6-digit PIN"
+                className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:ring-2 ${
+                  pinStatus === "error"
+                    ? "border-red-400 focus:border-red-400 focus:ring-red-200"
+                    : pinStatus === "ok"
+                      ? "border-green-500 focus:border-green-500 focus:ring-green-200"
+                      : "border-silver-dark focus:border-royal focus:ring-royal/30"
+                }`}
+              />
+              {pinMessage && (
+                <p
+                  className={`mt-1 text-xs ${
+                    pinStatus === "error"
+                      ? "text-red-600"
+                      : pinStatus === "ok"
+                        ? "text-green-600"
+                        : "text-silver-dark"
+                  }`}
+                >
+                  {pinStatus === "ok" ? "✓ " : pinStatus === "error" ? "✕ " : ""}
+                  {pinMessage}
+                </p>
+              )}
+            </div>
             <Field label="City" value={form.city} onChange={(v) => update("city", v)} required />
             <Field label="State" value={form.state} onChange={(v) => update("state", v)} required />
-            <Field label="Pincode" value={form.pincode} onChange={(v) => update("pincode", v)} required />
           </div>
 
           {/* Payment method */}

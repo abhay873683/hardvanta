@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/utils/formatPrice";
 import { Package, CheckCircle2 } from "lucide-react";
+import OrderTracker from "@/components/orders/OrderTracker";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "My Orders — hardvanta" };
@@ -80,7 +81,12 @@ export default async function OrdersPage({ searchParams }) {
                 </span>
               </div>
 
-              <div className="space-y-1 py-3 text-sm">
+              {/* Order progress tracker */}
+              <div className="py-5">
+                <OrderTracker status={order.status} />
+              </div>
+
+              <div className="space-y-1 border-t border-silver-light py-3 text-sm">
                 {order.items.map((item) => (
                   <div key={item.id} className="flex justify-between">
                     <span className="text-silver-dark">
