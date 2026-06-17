@@ -15,13 +15,13 @@ const columns = [
     title: "Information",
     links: [
       { label: "Track Your Order", href: "/orders" },
-      { label: "Videos", href: "#" },
-      { label: "FAQ", href: "#" },
-      { label: "Careers", href: "#" },
+      { label: "Videos", href: "/videos" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Careers", href: "/careers" },
       { label: "My Account", href: "/account" },
       { label: "Cart", href: "/cart" },
       { label: "Checkout", href: "/checkout" },
-      { label: "Payment Options", href: "#" },
+      { label: "Payment Options", href: "/payment-options" },
     ],
   },
   {
@@ -37,12 +37,12 @@ const columns = [
   {
     title: "Policies",
     links: [
-      { label: "Investor Relations", href: "#" },
-      { label: "CSR", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Shipping & Refund", href: "#" },
-      { label: "E-Waste Collection", href: "#" },
+      { label: "Investor Relations", href: "/investor-relations" },
+      { label: "CSR", href: "/csr" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Shipping & Refund", href: "/shipping-refund" },
+      { label: "E-Waste Collection", href: "/ewaste" },
     ],
   },
 ];
