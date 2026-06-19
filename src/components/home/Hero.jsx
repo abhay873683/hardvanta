@@ -1,73 +1,112 @@
 import Link from "next/link";
-import { ArrowRight, Truck, ShieldCheck, Headphones, Cpu } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 
-const stats = [
-  ["10k+", "Products"],
-  ["50k+", "Happy Makers"],
-  ["4.7★", "Avg. Rating"],
+const quickLinks = [
+  { label: "Arduino & Boards", slug: "dev-boards" },
+  { label: "Sensors", slug: "sensors" },
+  { label: "Motors", slug: "motors" },
+  { label: "Drone Parts", slug: "drones" },
+  { label: "3D Printing", slug: "3d-printers" },
 ];
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-navy via-navy-light to-royal-dark text-white">
-      {/* Decorative glows */}
-      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-royal/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-72 w-72 rounded-full bg-royal-light/20 blur-3xl" />
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1f44] via-[#13315c] to-royal">
+      {/* Subtle dotted grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.15]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+      <div className="pointer-events-none absolute -right-20 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-royal-light/30 blur-3xl" />
 
-      <div className="container-page relative grid items-center gap-10 py-14 md:grid-cols-2 md:py-20">
-        <div className="animate-fade-up">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-royal-light ring-1 ring-white/15">
-            <Cpu size={14} /> New arrivals every week
+      <div className="container-page relative grid items-center gap-10 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
+        {/* Left: copy + search + quick links */}
+        <div className="animate-fade-up text-white">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/20">
+            <Star size={13} className="fill-yellow-400 text-yellow-400" />
+            Trusted by 50,000+ makers across India
           </span>
-          <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight md:text-5xl lg:text-6xl">
-            Your Ideas, <span className="text-royal-light">Our Parts!</span>
+
+          <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            Build anything.
+            <br />
+            <span className="bg-gradient-to-r from-royal-light to-white bg-clip-text text-transparent">
+              We&apos;ve got the parts.
+            </span>
           </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-silver-light">
-            India&apos;s largest robotics &amp; engineering store — robot kits,
-            drone parts, components, 3D printing, batteries, motors and
-            microcontrollers, with start-to-end technical support.
+
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-silver-light">
+            India&apos;s store for robotics, electronics &amp; DIY engineering —
+            boards, sensors, motors, drones, 3D printing and more, shipped fast
+            with real technical support.
           </p>
+
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 rounded-lg bg-royal px-6 py-3 font-semibold text-white shadow-lg shadow-royal/30 transition-all hover:bg-royal-light active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 font-bold text-navy shadow-lg transition-all hover:bg-silver-light active:scale-[0.98]"
             >
-              Shop Now <ArrowRight size={18} />
+              Shop All Products <ArrowRight size={18} />
             </Link>
             <Link
-              href="/products?category=dev-boards"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
+              href="/b2b"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-7 py-3.5 font-semibold text-white transition-colors hover:bg-white/10"
             >
-              Explore Boards
+              Bulk &amp; B2B
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="mt-9 flex gap-8">
-            {stats.map(([value, label]) => (
-              <div key={label}>
-                <p className="text-2xl font-bold">{value}</p>
-                <p className="text-xs text-silver-light">{label}</p>
-              </div>
+          {/* Quick category links */}
+          <div className="mt-8 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-silver">
+              Popular:
+            </span>
+            {quickLinks.map((q) => (
+              <Link
+                key={q.slug}
+                href={`/products?category=${q.slug}`}
+                className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/20"
+              >
+                {q.label}
+              </Link>
             ))}
           </div>
         </div>
 
-        {/* Feature cards */}
-        <div className="hidden justify-self-end md:block">
+        {/* Right: stat panel */}
+        <div className="hidden md:block">
           <div className="grid grid-cols-2 gap-4">
-            {[
-              [Truck, "Fast Delivery", "Across India", "col-span-2"],
-              [ShieldCheck, "Genuine Parts", "100% authentic", ""],
-              [Headphones, "Expert Support", "We've got you", ""],
-            ].map(([Icon, title, sub, span], i) => (
-              <div
-                key={i}
-                className={`rounded-2xl bg-white/10 p-6 ring-1 ring-white/10 backdrop-blur transition-colors hover:bg-white/[0.15] ${span}`}
+            <div className="col-span-2 rounded-2xl bg-white p-6 shadow-2xl">
+              <p className="text-sm font-semibold text-silver-dark">
+                This week&apos;s deals
+              </p>
+              <p className="mt-1 text-2xl font-extrabold text-navy">
+                Up to 40% off
+              </p>
+              <p className="mt-1 text-sm text-silver-dark">
+                on starter kits, sensors &amp; modules
+              </p>
+              <Link
+                href="/products"
+                className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-royal hover:gap-2 hover:underline"
               >
-                <Icon size={28} className="text-royal-light" />
-                <p className="mt-3 font-semibold">{title}</p>
-                <p className="text-sm text-silver-light">{sub}</p>
+                Grab the deals <ArrowRight size={15} />
+              </Link>
+            </div>
+            {[
+              ["10,000+", "Products in stock"],
+              ["4.7★", "Average rating"],
+            ].map(([v, l]) => (
+              <div
+                key={l}
+                className="rounded-2xl bg-white/10 p-5 ring-1 ring-white/15 backdrop-blur"
+              >
+                <p className="text-2xl font-extrabold text-white">{v}</p>
+                <p className="mt-1 text-xs text-silver-light">{l}</p>
               </div>
             ))}
           </div>

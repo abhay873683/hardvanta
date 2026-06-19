@@ -40,7 +40,12 @@ function LoginForm() {
       return;
     }
     setStep("otp");
-    setInfo(`We've emailed a 6-digit code to ${email}.`);
+    if (data.demo && data.devCode) {
+      setOtp(data.devCode);
+      setInfo(`Demo mode: your code is ${data.devCode} (email not configured yet).`);
+    } else {
+      setInfo(`We've emailed a 6-digit code to ${email}.`);
+    }
   }
 
   // Step 2: complete sign-in with email + password + OTP.
@@ -74,9 +79,18 @@ function LoginForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+    const data = await res.json().catch(() => ({}));
     setLoading(false);
-    setInfo(res.ok ? `A new code was sent to ${email}.` : "");
-    if (!res.ok) setError("Could not resend the code.");
+    if (!res.ok) {
+      setError("Could not resend the code.");
+      return;
+    }
+    if (data.demo && data.devCode) {
+      setOtp(data.devCode);
+      setInfo(`Demo mode: your code is ${data.devCode} (email not configured yet).`);
+    } else {
+      setInfo(`A new code was sent to ${email}.`);
+    }
   }
 
   return (

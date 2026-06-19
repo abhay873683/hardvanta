@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -24,7 +25,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, phone, password }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -90,6 +91,23 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-lg border border-silver-dark px-3 py-2.5 text-sm outline-none focus:border-royal focus:ring-2 focus:ring-royal/30"
             />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-navy">
+              Mobile number
+            </label>
+            <div className="flex items-center rounded-lg border border-silver-dark focus-within:border-royal focus-within:ring-2 focus-within:ring-royal/30">
+              <span className="pl-3 pr-2 text-sm text-silver-dark">+91</span>
+              <input
+                type="tel"
+                inputMode="numeric"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                placeholder="10-digit mobile number"
+                className="w-full rounded-r-lg px-1 py-2.5 text-sm outline-none"
+              />
+            </div>
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-navy">

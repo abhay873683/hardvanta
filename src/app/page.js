@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Hero from "@/components/home/Hero";
 import CategoryTiles from "@/components/home/CategoryTiles";
+import BenefitsStrip from "@/components/home/BenefitsStrip";
 import GoogleReviews from "@/components/home/GoogleReviews";
 import ProductGrid from "@/components/products/ProductGrid";
 import { getFeaturedProducts, getDeals } from "@/lib/queries";
@@ -16,6 +17,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <BenefitsStrip />
       <CategoryTiles />
 
       {/* Deals strip */}

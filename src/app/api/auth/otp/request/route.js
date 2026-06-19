@@ -29,7 +29,12 @@ export async function POST(request) {
   await prisma.loginOtp.deleteMany({ where: { email: normalized } });
   await prisma.loginOtp.create({ data: { email: normalized, code, expires } });
 
-  await sendOtpEmail(normalized, code);
+  const result = await sendOtpEmail(normalized, code);
 
-  return NextResponse.json({ ok: true });
+  // Demo mode: when no email provider is configured, return the code so the
+  // login screen can display it. Real email sending takes over once
+  // RESEND_API_KEY is set.
+  const demo = !result.sent && !process.env.RESEND_API_KEY;
+
+  return NextResponse.json({ ok: true, demo, ...(demo ? { devCode: code } : {}) });
 }

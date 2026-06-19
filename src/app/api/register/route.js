@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password, phone } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -16,6 +16,14 @@ export async function POST(request) {
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Password must be at least 6 characters." },
+        { status: 400 }
+      );
+    }
+    // Indian mobile number: 10 digits starting 6-9.
+    const phoneDigits = String(phone || "").replace(/\D/g, "").slice(-10);
+    if (!/^[6-9][0-9]{9}$/.test(phoneDigits)) {
+      return NextResponse.json(
+        { error: "Enter a valid 10-digit mobile number." },
         { status: 400 }
       );
     }
@@ -33,7 +41,12 @@ export async function POST(request) {
 
     const hashed = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { name: name || null, email: normalizedEmail, password: hashed },
+      data: {
+        name: name || null,
+        email: normalizedEmail,
+        phone: phoneDigits,
+        password: hashed,
+      },
       select: { id: true, name: true, email: true },
     });
 
