@@ -39,3 +39,6 @@ next-env.d.ts
 # local logs
 studio.log
 dev.log
+
+# locally uploaded product images (machine-specific; use Supabase for shared/prod)
+/public/uploads
