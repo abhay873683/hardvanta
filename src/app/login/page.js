@@ -12,12 +12,16 @@ function LoginForm() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") || "/";
 
+  const justRegistered = params.get("registered") === "1";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState("password"); // "password" | "otp"
   const [error, setError] = useState("");
-  const [info, setInfo] = useState("");
+  const [info, setInfo] = useState(
+    justRegistered ? "Account created! Please sign in to continue." : ""
+  );
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -117,6 +121,11 @@ function LoginForm() {
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              {info && (
+                <p className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                  {info}
+                </p>
+              )}
               {error && (
                 <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
                   {error}

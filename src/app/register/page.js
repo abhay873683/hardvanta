@@ -33,10 +33,8 @@ export default function RegisterPage() {
         setLoading(false);
         return;
       }
-      // Auto sign-in after successful registration.
-      await signIn("credentials", { email, password, redirect: false });
-      router.push("/");
-      router.refresh();
+      // Account created — send them to login (which runs the OTP flow).
+      router.push("/login?registered=1");
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);
