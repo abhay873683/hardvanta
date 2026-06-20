@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Button";
+import AuthShell from "@/components/auth/AuthShell";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -42,13 +43,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="container-page flex min-h-[70vh] items-center justify-center py-12">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-card">
-        <h1 className="text-2xl font-bold text-navy">Create your account</h1>
-        <p className="mt-1 text-sm text-silver-dark">
-          Join hardvanta to track orders and save your cart.
-        </p>
-
+    <AuthShell
+      title="Create your account"
+      subtitle="Join hardvanta to track orders and save your cart."
+    >
         <button
           onClick={() => signIn("google", { callbackUrl: "/" })}
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-silver-dark bg-white py-2.5 text-sm font-semibold text-navy hover:border-royal hover:text-royal"
@@ -141,7 +139,6 @@ export default function RegisterPage() {
             Sign in
           </Link>
         </p>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

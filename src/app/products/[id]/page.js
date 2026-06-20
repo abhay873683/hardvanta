@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, ChevronRight, Truck, ShieldCheck, RotateCcw } from "lucide-react";
+import {
+  Star,
+  ChevronRight,
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+  BadgeCheck,
+  Headphones,
+} from "lucide-react";
 import { getProductById, getRelatedProducts } from "@/lib/queries";
 import { formatPrice } from "@/utils/formatPrice";
 import { imageSrc } from "@/utils/imageSrc";
@@ -25,41 +33,58 @@ export default async function ProductDetailPage({ params }) {
   const discountPct = hasDiscount
     ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : 0;
+  const savings = hasDiscount ? product.price - product.salePrice : 0;
+  const img = imageSrc(product.image);
+
+  const specs = [
+    ["Brand", product.brand],
+    ["Category", product.category],
+    ["SKU", product.id.slice(-8).toUpperCase()],
+    ["Availability", product.stock > 0 ? `In stock (${product.stock})` : "Out of stock"],
+  ];
 
   return (
     <div className="container-page py-8">
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-1 text-sm text-silver-dark">
+      <nav className="mb-6 flex flex-wrap items-center gap-1 text-sm text-silver-dark">
         <Link href="/" className="hover:text-royal">Home</Link>
         <ChevronRight size={14} />
         <Link href="/products" className="hover:text-royal">Products</Link>
         <ChevronRight size={14} />
-        <Link href={`/products?category=${product.category}`} className="hover:text-royal">
-          {product.category}
+        <Link href={`/products?category=${product.category}`} className="capitalize hover:text-royal">
+          {product.category.replace(/-/g, " ")}
         </Link>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        {/* Image */}
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-silver-light bg-white">
-          <Image
-            src={imageSrc(product.image)}
-            alt={product.name}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-            priority
-          />
-          {hasDiscount && (
-            <span className="absolute left-4 top-4 rounded-md bg-royal px-3 py-1 text-sm font-bold text-white">
-              -{discountPct}%
-            </span>
-          )}
+        {/* Image panel */}
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className="relative aspect-square overflow-hidden rounded-2xl border border-silver-light bg-white">
+            <Image
+              src={img}
+              alt={product.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-6"
+              priority
+            />
+            {hasDiscount && (
+              <span className="absolute left-4 top-4 rounded-lg bg-royal px-3 py-1 text-sm font-bold text-white shadow-sm">
+                -{discountPct}% OFF
+              </span>
+            )}
+          </div>
+          {/* Thumbnail strip (single image for now) */}
+          <div className="mt-3 flex gap-3">
+            <div className="relative h-20 w-20 overflow-hidden rounded-lg border-2 border-royal bg-white">
+              <Image src={img} alt="" fill sizes="80px" className="object-contain p-1.5" />
+            </div>
+          </div>
         </div>
 
-        {/* Info */}
+        {/* Buy box */}
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wide text-silver-dark">
+          <span className="text-xs font-semibold uppercase tracking-wide text-royal">
             {product.brand}
           </span>
           <h1 className="mt-1 text-2xl font-bold text-navy sm:text-3xl">
@@ -76,45 +101,78 @@ export default async function ProductDetailPage({ params }) {
             </span>
           </div>
 
-          <div className="mt-5 flex items-end gap-3">
-            <span className="text-3xl font-bold text-navy">
-              {formatPrice(price)}
-            </span>
-            {hasDiscount && (
-              <span className="mb-1 text-lg text-silver-dark line-through">
-                {formatPrice(product.price)}
+          {/* Price */}
+          <div className="mt-5 rounded-2xl border border-silver-light bg-cloud p-5">
+            <div className="flex flex-wrap items-end gap-3">
+              <span className="text-3xl font-extrabold text-navy">
+                {formatPrice(price)}
               </span>
-            )}
-          </div>
+              {hasDiscount && (
+                <>
+                  <span className="mb-1 text-lg text-silver-dark line-through">
+                    {formatPrice(product.price)}
+                  </span>
+                  <span className="mb-1 text-sm font-bold text-green-600">
+                    Save {formatPrice(savings)}
+                  </span>
+                </>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-silver-dark">Inclusive of all taxes</p>
 
-          <p className="mt-1 text-sm font-medium">
-            {product.stock > 0 ? (
-              <span className="text-green-600">In stock ({product.stock} available)</span>
-            ) : (
-              <span className="text-red-500">Out of stock</span>
-            )}
-          </p>
+            <p className="mt-3 text-sm font-medium">
+              {product.stock > 0 ? (
+                <span className="text-green-600">● In stock — ready to ship</span>
+              ) : (
+                <span className="text-red-500">● Out of stock</span>
+              )}
+            </p>
 
-          <p className="mt-5 leading-relaxed text-ink/80">
-            {product.description}
-          </p>
-
-          <div className="mt-8">
-            <AddToCart product={product} />
+            <div className="mt-4">
+              <AddToCart product={product} />
+            </div>
           </div>
 
           {/* Trust badges */}
-          <div className="mt-8 grid grid-cols-3 gap-4 border-t border-silver-light pt-6 text-center text-xs text-silver-dark">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               [Truck, "Fast delivery"],
-              [ShieldCheck, "Genuine products"],
+              [BadgeCheck, "Genuine"],
               [RotateCcw, "7-day returns"],
+              [Headphones, "Support"],
             ].map(([Icon, label], i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
+              <div
+                key={i}
+                className="flex flex-col items-center gap-1.5 rounded-xl border border-silver-light bg-white p-3 text-center text-xs font-medium text-navy"
+              >
                 <Icon size={20} className="text-royal" />
                 {label}
               </div>
             ))}
+          </div>
+
+          {/* Description */}
+          <div className="mt-8">
+            <h2 className="mb-2 text-lg font-bold text-navy">About this product</h2>
+            <p className="leading-relaxed text-ink/75">{product.description}</p>
+          </div>
+
+          {/* Specifications */}
+          <div className="mt-8">
+            <h2 className="mb-3 text-lg font-bold text-navy">Specifications</h2>
+            <dl className="overflow-hidden rounded-xl border border-silver-light">
+              {specs.map(([k, v], i) => (
+                <div
+                  key={k}
+                  className={`grid grid-cols-3 text-sm ${
+                    i % 2 ? "bg-white" : "bg-cloud"
+                  }`}
+                >
+                  <dt className="px-4 py-3 font-medium text-silver-dark">{k}</dt>
+                  <dd className="col-span-2 px-4 py-3 capitalize text-navy">{v}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </div>
@@ -122,7 +180,7 @@ export default async function ProductDetailPage({ params }) {
       {/* Related */}
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-6 text-xl font-bold text-navy">Related Products</h2>
+          <h2 className="heading-accent mb-8">You may also like</h2>
           <ProductGrid products={related} />
         </section>
       )}

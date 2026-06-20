@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import AuthShell from "@/components/auth/AuthShell";
 import { Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
@@ -98,13 +99,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="container-page flex min-h-[70vh] items-center justify-center py-12">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-card">
-        <h1 className="text-2xl font-bold text-navy">Welcome back</h1>
-        <p className="mt-1 text-sm text-silver-dark">
-          Log in to your hardvanta account.
-        </p>
-
+    <AuthShell title="Welcome back" subtitle="Log in to your hardvanta account.">
         {step === "password" ? (
           <>
             <button
@@ -235,8 +230,7 @@ function LoginForm() {
             </div>
           </form>
         )}
-      </div>
-    </div>
+    </AuthShell>
   );
 }
 

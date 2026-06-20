@@ -9,7 +9,21 @@ export function imageSrc(value) {
   if (typeof value !== "string") return PLACEHOLDER;
   const v = value.trim();
   if (!v) return PLACEHOLDER;
-  if (v.startsWith("http://") || v.startsWith("https://")) return v;
+
+  // Absolute URL: must be a *valid* http(s) URL (no spaces / real host),
+  // otherwise next/image throws. e.g. "https://Raspberry Pi 3.png" is invalid.
+  if (v.startsWith("http://") || v.startsWith("https://")) {
+    try {
+      const u = new URL(v);
+      if (/\s/.test(v) || !u.hostname.includes(".")) return PLACEHOLDER;
+      return v;
+    } catch {
+      return PLACEHOLDER;
+    }
+  }
+
+  // Root-relative path served from /public.
   if (v.startsWith("/")) return v;
+
   return PLACEHOLDER;
 }
