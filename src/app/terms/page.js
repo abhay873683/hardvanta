@@ -488,7 +488,7 @@ export default function TermsPage() {
             <Section id="overview" heading="Overview">
               <p>
                 This website is operated by Hardvanta Technologies LLP.
-                Throughout these terms, "we", "us", and "our" refer to
+                Throughout these terms, &quot;we&quot;, &quot;us&quot;, and &quot;our&quot; refer to
                 Hardvanta Technologies LLP. By accessing or using this site —
                 whether browsing, creating an account, or placing an order —
                 you agree to be bound by these Terms of Service.
@@ -743,7 +743,7 @@ export default function TermsPage() {
               </p>
               <p>
                 We may also provide access to optional third-party tools on an
-                "as is" basis without any warranties or endorsement. Use of
+                &quot;as is&quot; basis without any warranties or endorsement. Use of
                 such tools is entirely at your own discretion and risk. We
                 recommend reviewing the terms of any third-party service before
                 engaging with it.
@@ -759,7 +759,7 @@ export default function TermsPage() {
               </p>
               <p>
                 You agree that any content you submit will not be unlawful,
-                harmful, misleading, or in violation of any third party's
+                harmful, misleading, or in violation of any third party&apos;s
                 rights. You are solely responsible for the accuracy of anything
                 you submit to us or post on our platform.
               </p>
@@ -778,14 +778,14 @@ export default function TermsPage() {
 
             <Section id="disclaimer" heading="Disclaimer of warranties">
               <p>
-                This website and its content are provided "as is" and "as
-                available" without warranties of any kind — express or implied.
+                This website and its content are provided &quot;as is&quot; and &quot;as
+                available&quot; without warranties of any kind — express or implied.
                 We do not guarantee uninterrupted, timely, or error-free access
                 to our website or services.
               </p>
               <p>
                 We do not warrant that products purchased will meet every
-                individual customer's specific expectations or technical
+                individual customer&apos;s specific expectations or technical
                 requirements. It is your responsibility to verify product
                 specifications before purchasing.
               </p>
@@ -822,7 +822,7 @@ export default function TermsPage() {
                 claim, demand, loss, liability, or expense — including
                 reasonable legal fees — arising from your breach of these Terms
                 of Service, your violation of any applicable law, or your
-                infringement of any third party's rights through your use of
+                infringement of any third party&apos;s rights through your use of
                 our website or services.
               </p>
             </Section>
@@ -915,7 +915,7 @@ export default function TermsPage() {
                 <strong>Hardvanta Technologies LLP</strong>
                 <p>Greater Noida, Uttar Pradesh, India</p>
                 <p>
-                  <a href="mailto:support@hardvantatechnology@gmail.com">
+                  <a href="mailto:support@hardvanta.com">
                     support@hardvanta.com
                   </a>
                 </p>
